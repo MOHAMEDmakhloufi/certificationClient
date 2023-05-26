@@ -1,0 +1,20 @@
+
+.btn-group{
+  width: 75% !important;
+}
+.display-btn{
+  color: #5F6368;
+}
+.display-btn:hover{
+  background-color: #5F6368;
+  color: white !important;
+}
+.display-btn.btn{
+  border-radius: 100%;
+  width: 42px;
+  height: 42px;
+  color: #5F6368;
+  padding: 0;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+

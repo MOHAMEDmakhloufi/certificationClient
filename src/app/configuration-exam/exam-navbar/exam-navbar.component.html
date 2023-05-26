@@ -1,0 +1,22 @@
+<div class="root">
+  <nav class="navbar row ps-4">
+    <div class="col-4 d-flex d-flex align-items-center ">
+      <app-offcanvas></app-offcanvas>
+      <span class="logo ms-2" routerLink="/display-certification/{{examName}}/{{examId}}">
+      {{examName}}
+    </span>
+    </div>
+    <div class="col-4 center-btn d-flex align-items-center justify-content-center">
+      <button class="{{toggle?'btn btn-active': 'btn'}}" (click)="handlerCenterButton()">flow</button>
+      <button class="{{!toggle?'btn btn-active': 'btn'}}" (click)="handlerCenterButton()">works and tests</button>
+    </div>
+    <div class="col-3 right-btn">
+      <div class="item d-flex justify-content-end pe-4">
+        <div class="user-image">
+          <i class="bi bi-person"></i>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+</div>

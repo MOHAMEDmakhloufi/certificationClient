@@ -1,0 +1,114 @@
+
+<ng-container>
+  <app-exam-navbar [examId]="certificationId" [examName]="certificationName"></app-exam-navbar>
+  <ng-container *ngIf="(appState$ | async) as appState" [ngSwitch]="appState.dataState" >
+    <ng-container *ngSwitchCase="DataState.LOADING_STATE">
+      <app-loading-bar></app-loading-bar>
+    </ng-container>
+    <ng-container *ngSwitchCase="DataState.LOADED_STATE" >
+      <form [formGroup]="questionFormGroup" (ngSubmit)="onSubmit()" >
+        <div class="container " >
+          <div class="question-header shadow py-2 px-3" contenteditable="true">
+            <textarea class="form-control" formControlName="questionHeader"
+                      placeholder="write the question header here" appTextarea></textarea>
+            <app-validator-message [fg]="questionFormGroup" [fcn]="'questionHeader'" [vld]="'required'"
+                                   [msg]="'question Header is required'" class="mb-3"></app-validator-message>
+            <app-validator-message [fg]="questionFormGroup" [fcn]="'questionHeader'" [vld]="'minlength'"
+                                   [msg]="'the length must be greater than 5'" class="mb-3"></app-validator-message>
+          </div>
+          <div class="question row mt-4">
+            <div class="col-1 ">
+              <div class="group-btn shadow-sm d-flex flex-column justify-align-center align-items-center">
+                <button type="button" class="btn plus-btn my-1 d-flex align-items-center justify-content-center"
+                        (click)="addAnswer()" >
+                  +
+                </button>
+                <ng-content select="[displayBtn]"></ng-content>
+              </div>
+            </div>
+            <div class="question-body col-11 ">
+              <div class="skill-measured d-flex align-items-center">
+                <span class="me-2">Skills measured : </span>
+
+                <select class="form-select form-select-sm me-2" aria-label=".form-select-sm example"
+                        formControlName="skillMeasured" *ngIf="skillsMeasuredList" >
+                  <option *ngFor="let skill of skillsMeasuredList" [value]="skill">
+                    {{skill.skillName}}
+                  </option>
+                </select>
+                <app-validator-message [fg]="questionFormGroup" [fcn]="'skillMeasured'" [vld]="'required'"
+                                       [msg]="'skillMeasured is required'" class="d-flex align-items-center"></app-validator-message>
+                <div class="group-btn shadow-sm d-flex flex-column justify-align-center align-items-center">
+                  <button type="button" class="btn plus-btn my-1 d-flex align-items-center justify-content-center"
+                          (click)="addAnswer()" >
+                    +
+                  </button>
+                  <ng-content select="[displayBtn]"></ng-content>
+                </div>
+              </div>
+              <div class="answers" formArrayName="answers">
+                <div *ngFor="let awr of answers.controls; let i=index" >
+                  <div class="answer row  my-3 "
+                       [ngClass]="[awr.value.answerValidity?'answer-correct': 'answer-incorrect']"
+                       [formGroupName]="i" #answer>
+
+                    <div class="answer-body col-10 d-flex align-items-center py-2 ps-3 pe-4">
+                      <textarea rows="1" class="form-control" formControlName="answerBody"
+                                placeholder="write an answer here " appTextare></textarea>
+                    </div>
+                    <div class="col-1 d-flex align-items-center justify-content-center"
+                    >
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch"
+                               #checkInput (click)="checkAnswer(checkInput, answer)"
+                               formControlName="answerValidity">
+                      </div>
+                    </div>
+
+                    <div class="col-1 three-points d-flex align-items-center justify-content-center"
+                    >
+                      <div class="dropup">
+                        <button type="button" class="btn" data-bs-toggle="dropdown" aria-expanded="false">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                            <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                          </svg>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" (click)="removeAnswer(i)">Delete</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <app-validator-message [fg]="getFormGroup(i)" [fcn]="'answerBody'" [vld]="'required'"
+                                         [msg]="'answer body is required'" class="mb-3"></app-validator-message>
+                  <app-validator-message [fg]="getFormGroup(i)" [fcn]="'answerBody'" [vld]="'minlength'"
+                                         [msg]="'the length must be greater than 5'" class="mb-3"></app-validator-message>
+                </div>
+                <app-validator-message [fg]="questionFormGroup" [fcn]="'answers'" [vld]="'minLengthList'"
+                                       [msg]="'the length of list must be greater than 2'" class="mb-3"></app-validator-message>
+                <app-validator-message [fg]="questionFormGroup" [fcn]="'answers'" [vld]="'minAnswerNumber'"
+                                       [msg]="'the number of correct answers must be greater than 1'" class="mb-3"></app-validator-message>
+              </div >
+            </div>
+          </div>
+        </div>
+        <div class="question-footer d-flex justify-content-center">
+
+           <ng-content select="[footer]"></ng-content>
+
+        </div>
+      </form>
+    </ng-container>
+    <ng-container *ngSwitchCase="DataState.ERROR_STATE">
+      <div class="container my-5">
+        <div class="alert alert-danger">
+          <strong>Danger! </strong> {{ appState.error }}.
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+
+</ng-container>
+
+

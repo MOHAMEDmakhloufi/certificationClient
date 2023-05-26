@@ -1,0 +1,135 @@
+<ng-container>
+  <app-exam-navbar [examId]="examId" [examName]="examName"></app-exam-navbar>
+  <ng-container *ngIf="(appState$ | async) as appState" [ngSwitch]="appState.dataState">
+    <ng-container *ngSwitchCase="DataState.LOADING_STATE">
+      <app-loading-bar></app-loading-bar>
+    </ng-container>
+    <ng-container *ngSwitchCase="DataState.LOADED_STATE">
+      <div class="container" >
+        <div class="exam-header row shadow mt-5 p-4" >
+          <div class="logo col-md-4 d-flex justify-content-center align-items-center">
+            <div class="loading-icon  justify-content-center align-items-center">
+              <div class="spinner-border text-muted"></div>
+            </div>
+            <img [src]="appState.appData.data.exam.logoUrl" alt="" class="fit-image" appImageLoading>
+          </div>
+          <div class="info col-md-8 ">
+            <h3>{{appState.appData.data.exam.certificationName}}</h3>
+            <button class="btn edit-btn" routerLink="/edit-certification/{{examId}}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+              </svg>
+            </button>
+            <div class="nq-tl d-flex justify-content-around align-items-center">
+              <p>n Questions : {{appState.appData.data.exam.nbQuestion}}</p>
+              <p>Time Limit : {{appState.appData.data.exam.timeLimit}} min</p>
+            </div>
+            <div class="skills" #skills>
+              <table class="table">
+                <thead>
+                <tr class="header-tab" >
+                  <th>Skills Measured</th>
+                  <th>Percent %</th>
+                  <th>nQ</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr  *ngFor="let skill of appState.appData.data.exam.skillsMeasuredList">
+                  <td>{{skill.skillName}}</td>
+                  <td>{{skill.percent}} %</td>
+                  <td>{{numberOfQuestions(skill)}}/{{requirementsQuestions(skill)}}</td>
+                </tr>
+
+                </tbody>
+              </table>
+            </div>
+            <div class="view-btn d-flex justify-content-end">
+              <button  class="btn" (click)="viewAll(skills)">
+                <svg id="arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
+                  <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                </svg>
+                View All
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="exam row mt-4">
+          <div class="col-3 ps-0">
+            <div class="requirement shadow-sm p-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style="color:black" class="mb-2 bi bi-exclamation-triangle" viewBox="0 0 16 16">
+                <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/>
+                <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/>
+              </svg>
+              <p>You should have minimal number of questions for each skill measured </p>
+            </div>
+          </div>
+          <div class="exam-body col-9 ">
+            <div class="group-btn d-flex align-items-center">
+              <div class="form-check" (click)="selectAll(selectAllIpt,appState.appData.data.exam.questions.length)">
+                <input class="form-check-input" [ngClass]="(disabledTrash$ | async)!=0 &&
+                 (disabledTrash$ | async)!=appState.appData.data.exam.questions.length?'select-all-input': ''"
+                       type="checkbox" value="" id="flexCheckDefault" #selectAllIpt disabled
+                       [checked]="(disabledTrash$ | async)== appState.appData.data.exam.questions.length">
+                <label class="form-check-label" for="flexCheckDefault">
+                  Select All
+                </label>
+              </div>
+              <button class="btn trash-btn ms-5 me-3" [disabled]="(disabledTrash$ | async)==0" (click)="deleteAll(appState.appData.data.exam)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                  <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                </svg>
+              </button>
+              <button class="btn plus-btn  d-flex align-items-center justify-content-center"
+                    routerLink="create-question">
+                +
+              </button>
+            </div>
+            <app-confirm-dialog
+              *ngIf="appState.appData.data.exam.showConfirmation"
+              [message]="'Are you sure you want to delete these questions?'"
+              (confirm)="confirmDelete(appState.appData.data.exam)"
+              (cancel)="cancelDelete(appState.appData.data.exam)"
+            ></app-confirm-dialog>
+            <div class="question row shadow-sm my-3" *ngFor="let question of appState.appData.data.exam.questions; let i=index">
+              <div id="question-check-{{i}}" class="question-check col-1 d-flex align-items-center justify-content-center"
+                   #questionCheck (click)="checkQuestion(questionCheck)">
+                <input class="form-check-input mt-0" type="checkbox" value="{{question.id}}" aria-label="Checkbox for following text input" disabled>
+              </div>
+              <div class="question-body col-10 d-flex" routerLink="display-question/{{question.id}}">
+                <div class="icon-question  me-3 d-flex align-items-center justify-content-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-question-octagon" viewBox="0 0 16 16">
+                    <path d="M4.54.146A.5.5 0 0 1 4.893 0h6.214a.5.5 0 0 1 .353.146l4.394 4.394a.5.5 0 0 1 .146.353v6.214a.5.5 0 0 1-.146.353l-4.394 4.394a.5.5 0 0 1-.353.146H4.893a.5.5 0 0 1-.353-.146L.146 11.46A.5.5 0 0 1 0 11.107V4.893a.5.5 0 0 1 .146-.353L4.54.146zM5.1 1 1 5.1v5.8L5.1 15h5.8l4.1-4.1V5.1L10.9 1H5.1z"/>
+                    <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                  </svg>
+                </div>
+                <div class="text pt-2 pb-1 d-flex flex-column">
+                  <span >administrator  published a new question </span>
+                  <span class="skill badge">{{question.skillMeasured.skillName}} </span>
+                  <span class="date mt-1 pt-1">{{question.createAt | date:'MMM d, y'}} <span *ngIf="question.updateAt">(Modified {{question.updateAt | date:'MMM d, y'}})</span> </span>
+                </div>
+              </div>
+              <div class="col-1 d-flex align-items-center justify-content-center">
+                <button class="btn edit-btn" routerLink="edit-question/{{question.id}}">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="DataState.ERROR_STATE">
+      <div class="container my-5">
+        <div class="alert alert-danger">
+          <strong>Danger! </strong> {{ appState.error }}.
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-container>
+

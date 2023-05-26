@@ -1,0 +1,43 @@
+<div class="three-lines d-flex align-items-center justify-content-center"
+     data-bs-toggle="offcanvas" data-bs-target="#sidebar">
+  <img src="../../../assets/images/menu.png" >
+</div>
+
+<div class="offcanvas offcanvas-start" id="sidebar">
+  <div class="offcanvas-header d-flex justify-content-end">
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ng-container *ngIf="(appState$ | async) as appState" [ngSwitch]="appState.dataState">
+      <ng-container *ngSwitchCase="DataState.LOADING_STATE" >
+        <div class="spinner-border"></div>
+      </ng-container>
+      <ng-container *ngSwitchCase="DataState.LOADED_STATE">
+        <div class="group-certif d-flex flex-column">
+          <div class="border-bottom mb-1">
+            <div class="link mb-1">
+              <a href="/certifications" >
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-clipboard-data pe-3"></i>
+                  certifications
+                </div>
+              </a>
+            </div>
+          </div>
+          <div *ngFor="let exam of appState.appData.data.exams" routerLink="/display-certification/{{exam.certificationName}}/{{exam.id}}"
+               class="link" >
+            <a class="d-flex">
+              <div class="logo-item pe-3">
+                <p class="d-flex justify-content-center align-items-center">
+                  {{exam.certificationName[0]}}
+                </p>
+              </div>
+              {{exam.certificationName}}
+            </a>
+          </div>
+        </div>
+      </ng-container>
+
+    </ng-container>
+  </div>
+</div>

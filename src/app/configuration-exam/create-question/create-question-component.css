@@ -1,0 +1,189 @@
+
+.question-header{
+  border-radius: 10px;
+  position: relative;
+  color: #5F6368;
+
+}
+.question-header::before{
+  content: "Question Header";
+  left: 8%;
+  top: 0;
+  position: absolute;
+  transform: translateY(-50%);
+  background-color: white;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-weight: 500;
+}
+.question-header textarea, .question-body textarea{
+  border: 0;
+  width: 100%;
+  color: #5F6368;
+}
+.question .group-btn{
+  border-radius: 10px;
+  color: #5F6368;
+}
+.question > .col-1 .group-btn{
+  position: fixed;
+}
+.question > .col-1 button i{
+  font-size: 20px;
+  color: #5F6368;
+}
+.question > .col-1 .three-points{
+  border-radius: 10px;
+}
+.question .group-btn .btn{
+  border-radius: 100%;
+  width: 42px;
+  height: 42px;
+  color: #5F6368;
+  padding: 0;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+.question .group-btn .plus-btn{
+  padding-bottom: 6px;
+  font-size: 30px;
+  color: #198754;
+}
+.question .group-btn .plus-btn:hover{
+  background-color: #198754;
+  color: white;
+}
+.question .group-btn .display-btn{
+  color: #5F6368;
+}
+.question .group-btn .display-btn:hover{
+  background-color: #5F6368;
+  color: white;
+}
+.question-body{
+  padding-left: 20px !important;
+  color: #5F6368;
+}
+.question-body .skill-measured select{
+  width: auto;
+}
+.question-body .skill-measured .skill-text{
+  font-weight: 500;
+}
+.question-body .answer{
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  border: #E0E0E0 1px solid;
+  color: #5F6368;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  min-height: 67px;
+
+  transition: border-bottom .15s ease-in-out;
+}
+.question-body .answer:hover{
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+.question-body .answer .three-points button.btn.show, .question-body .answer .three-points button:active{
+  border: 0 !important;
+}
+.form-switch .form-check-input:checked {
+  background-color: #198754;
+  border-color: #198754;
+}
+.form-check-input:focus {
+  border-color: rgb(25, 135, 84) !important;
+  box-shadow: rgba(25, 135, 84, 0.25) 0px 0px 0px 0.25rem !important;
+}
+.form-switch .form-check-input {
+  width: 3em !important;
+}
+.question-body .answer-correct{
+  border-bottom: 2px #198754 solid;
+}
+.question-body .answer-incorrect{
+  border-bottom: 2px #dc3545 solid;
+}
+
+.question-footer{
+  position: fixed !important;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 71px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border: #E0E0E0 1px solid;
+  box-shadow: 0 -0.1rem 1rem rgba(0,0,0,.15)!important;
+  background-color: white;
+  z-index: 1000;
+}
+.question-footer .btn-group{
+  width: 75% !important;
+}
+.question-footer button{
+  width: 12rem;
+}
+
+
+
+/* Small */
+@media (max-width: 768px) {
+  .question-body{
+    padding-left: 0 !important;
+  }
+  .question-body .skill-measured{
+    display: block !important;
+    margin-top: 10px;
+    margin-bottom: 0px;
+  }
+  .question-body .skill-measured select{
+    width: 80% !important;
+  }
+  .question .skill-measured .group-btn{
+    flex-direction: row !important;
+
+    width: auto !important;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,0)!important;
+    margin-top: 5px;
+  }
+  .question .group-btn .btn {
+    width: 38px;
+    height: 38px;
+    margin: 0 5px;
+  }
+  .question .col-1 .group-btn{
+    display: none !important;
+    width: 0 !important;
+  }
+  .question > .col-1 {
+    width: 100% !important;
+    display: flex;
+  }
+  .question .question-body{
+    width: 100% !important;
+    padding-left: calc(var(--bs-gutter-x) * .5) !important;
+    padding-right: calc(var(--bs-gutter-x) * .5) !important;
+  }
+  .form-switch .form-check-input {
+    width: 2em !important;
+  }
+  .question .answer .three-points{
+    padding: 0 !important;
+  }
+
+  .question .answer .three-points svg{
+    width: 20px;
+    height: 20px;
+  }
+  .question-body .answer-body{
+    padding-left:  .5rem !important;
+    padding-right: .5rem !important;
+  }
+
+}
+@media (min-width: 769px) {
+  .question .skill-measured .group-btn{
+    display: none !important;
+    width: 0 !important;
+  }
+}

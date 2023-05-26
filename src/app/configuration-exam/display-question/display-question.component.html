@@ -1,0 +1,92 @@
+<ng-container>
+  <app-exam-navbar [examId]="certificationId" [examName]="certificationName"></app-exam-navbar>
+  <ng-container *ngIf="(appState$ | async) as appState" [ngSwitch]="appState.dataState" >
+    <ng-container *ngSwitchCase="DataState.LOADING_STATE">
+      <app-loading-bar></app-loading-bar>
+    </ng-container>
+    <ng-container *ngSwitchCase="DataState.LOADED_STATE" >
+
+      <form>
+        <div class="container " >
+          <div class="question-header shadow py-2 px-3" contenteditable="true">
+            {{question.questionHeader}}
+          </div>
+          <div class="question row mt-4">
+            <div class="col-1 ">
+
+                <div class="three-points d-flex align-items-center justify-content-center  shadow-sm">
+                  <div class="dropup">
+                    <button type="button" class="btn" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="bi bi-three-dots"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item"
+                             routerLink="/display-certification/{{certificationName}}/{{certificationId}}/edit-question/{{question.id}}">Update</a></li>
+                      <li><a class="dropdown-item">Delete</a></li>
+                    </ul>
+                  </div>
+                </div>
+
+            </div>
+            <div class="question-body col-11 ">
+              <div class="skill-measured d-flex align-items-center">
+                <span class="me-2">Skills measured : </span>
+                <span class="skill-text">
+                  {{question?.skillMeasured.skillName}}
+                </span>
+
+              </div>
+              <div class="answers">
+                <div *ngFor="let awr of question.answers; let i=index" >
+                  <div class="answer row  my-3 "
+                       [ngClass]="[awr.answerValidity== AnswerValidity.CORRECT?'answer-correct': 'answer-incorrect']">
+                    <div class="answer-body col-10 d-flex align-items-center py-2 ps-3 pe-4">
+                      {{awr.answerBody}}
+                    </div>
+                  </div>
+                </div>
+              </div >
+            </div>
+          </div>
+        </div>
+        <div class="question-footer d-flex justify-content-center">
+            <div class="btn-group shadow-sm" role="group" aria-label="Basic outlined example">
+              <ng-container *ngIf="(hasPrevious$ | async) as hasPrevious">
+                <button type="button" class="btn btn-outline-primary"
+                        [disabled]="hasPrevious.data.hasId==0"
+                        routerLink="/display-certification/{{certificationName}}/{{certificationId}}/display-question/{{hasPrevious.data.hasId}}">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                    <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+                  </svg>
+                  previous
+                </button>
+              </ng-container>
+              <ng-container *ngIf="(hasNext$ | async) as hasNext">
+                <button type="button" class="btn btn-outline-primary"
+                        [disabled]="hasNext.data.hasId==0"
+                        routerLink="/display-certification/{{certificationName}}/{{certificationId}}/display-question/{{hasNext.data.hasId}}">
+                  next
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                    <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+                  </svg>
+                </button>
+              </ng-container>
+            </div>
+        </div>
+      </form>
+    </ng-container>
+    <ng-container *ngSwitchCase="DataState.ERROR_STATE">
+      <div class="container my-5">
+        <div class="alert alert-danger">
+          <strong>Danger! </strong> {{ appState.error }}.
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+
+</ng-container>
+
+
+
+

@@ -1,0 +1,59 @@
+.three-lines{
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+}
+.three-lines img{
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.three-lines:hover{
+  background-color: #E0E0E0;
+  cursor: pointer;
+}
+.group-certif{
+  width: 100%;
+}
+.group-certif a{
+  text-decoration: none;
+  color: #5F6368;
+}
+.group-certif .link{
+  border-top-right-radius: 100px;
+  border-bottom-right-radius: 100px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left: 50px;
+  cursor: pointer;
+}
+.group-certif .link:hover{
+  background-color: rgba(26,115,232,.12);
+}
+.logo-item{
+  width: 41px;
+  height: 41px;
+}
+.logo-item p{
+  margin: 0 !important;
+  width: 25px;
+  height: 25px;
+  border-radius: 100%;
+  background-color: #5F6368;
+  color: white;
+}
+.group-certif i{
+  font-size: 25px;
+}
+.offcanvas-body{
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  padding-left: 0;
+}
+
+@media (max-width: 768px) {
+  .three-lines img{
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+}

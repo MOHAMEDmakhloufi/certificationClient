@@ -1,0 +1,115 @@
+<form class="root" [formGroup]="examFormGroup" (ngSubmit)="onSubmit()">
+
+  <nav class="navbar row pt-2 ps-4">
+    <div class="col-6 d-flex align-items-center ">
+      <div class="three-lines d-flex align-items-center justify-content-center"
+           data-bs-toggle="offcanvas" data-bs-target="#sidebar">
+        <a href="/certifications">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+          </svg>
+        </a>
+      </div>
+      <span class="title ms-3" >
+                    {{createForm?"Create an exam": "Edit an exam"}}
+      </span>
+    </div>
+
+    <div class="col-6 d-flex justify-content-end py-2 pe-5 right-btn">
+      <button type="submit" class="btn btn-primary btn-submit" [disabled]="!examFormGroup.valid || (isLoading$ | async)">
+        <div class="spinner-grow text-light" role="status" *ngIf="(isLoading$ | async)">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <span *ngIf="isLoading$ | async">Loading...</span>
+        <span *ngIf="!(isLoading$ | async)">{{createForm?"Create the exam": "Edit the exam"}}</span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="row justify-content-center my-4">
+    <div class="card col-6 p-5">
+      <div class="logo-group mb-4 d-flex align-items-center justify-content-around">
+        <img [src]="imageSrc?imageSrc:exam.logoUrl" class="logo">
+        <input type="file" (change)="onFileSelected($event)" formControlName="logo" class="form-control ms-3" >
+      </div>
+      <app-validator-message [fg]="examFormGroup" [fcn]="'logo'" [vld]="'required'"
+                             [msg]="'logo is required'" class="mb-3"></app-validator-message>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="certificationName ">Certification Name </span>
+        <input type="text" class="form-control" formControlName="certificationName" placeholder="Certification Name ">
+        <app-validator-message [fg]="examFormGroup" [fcn]="'certificationName'" [vld]="'required'"
+                               [msg]="'Certification Name is required'"></app-validator-message>
+        <app-validator-message [fg]="examFormGroup" [fcn]="'certificationName'" [vld]="'minlength'"
+                               [msg]="'the length must be greater than 3'"></app-validator-message>
+      </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="timeLimit">time limit</span>
+        <input type="number" class="form-control" formControlName="timeLimit" placeholder="mm" >
+        <span class="input-group-text ">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-hourglass-split" viewBox="0 0 16 16">
+            <path d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2h-7zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48V8.35zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z"/>
+          </svg>
+        </span>
+        <app-validator-message [fg]="examFormGroup" [fcn]="'timeLimit'" [vld]="'required'"
+                               [msg]="'timeLimit is required'"></app-validator-message>
+        <app-validator-message [fg]="examFormGroup" [fcn]="'timeLimit'" [vld]="'min'"
+                               [msg]="'the delay must be greater than 5 min'"></app-validator-message>
+      </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="nbQuestion">number of quesitons</span>
+        <input type="number" class="form-control" formControlName="nbQuestion" placeholder="number of questions" >
+        <app-validator-message [fg]="examFormGroup" [fcn]="'nbQuestion'" [vld]="'required'"
+                               [msg]="'the number of question is required'"></app-validator-message>
+        <app-validator-message [fg]="examFormGroup" [fcn]="'nbQuestion'" [vld]="'min'"
+                               [msg]="'You should have one or more questions'"></app-validator-message>
+      </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text">description</span>
+        <textarea class="form-control" formControlName="description"></textarea>
+        <app-validator-message [fg]="examFormGroup" [fcn]="'description'" [vld]="'maxlength'"
+                               [msg]="'the length must be less than 100 character'"></app-validator-message>
+      </div>
+
+      <div class="skills-measured" formArrayName="skillsMeasuredList">
+        <div *ngFor="let skill of skills.controls; let i=index">
+          <div class="mb-3" [formGroupName]="i" >
+            <div class="d-flex">
+              <div class="input-group">
+                <span class="input-group-text">skills measured</span>
+                <input type="text" class="form-control" formControlName="skillName" placeholder="skills measured name" >
+              </div>
+              <div class="input-group skills-measured-percent">
+                <span class="input-group-text percent">percent</span>
+                <input type="text" class="form-control" formControlName="percent" placeholder="20" >
+                <span class="input-group-text">%</span>
+                <span class="input-group-text trash" (click)="removeSkill(i)" style="cursor: pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+              </svg>
+              </span>
+              </div>
+            </div>
+            <app-validator-message [fg]="getFormGroup(i)" [fcn]="'skillName'" [vld]="'required'"
+                                   [msg]="'skillName is required'"></app-validator-message>
+            <app-validator-message [fg]="getFormGroup(i)" [fcn]="'skillName'" [vld]="'minlength'"
+                                   [msg]="'the length must be greater than 3'"></app-validator-message>
+            <app-validator-message [fg]="getFormGroup(i)" [fcn]="'percent'" [vld]="'required'"
+                                   [msg]="'percent is required'"></app-validator-message>
+            <app-validator-message [fg]="getFormGroup(i)" [fcn]="'percent'" [vld]="'min'"
+                                   [msg]="'the percent must be greater than 0%'"></app-validator-message>
+            <app-validator-message [fg]="getFormGroup(i)" [fcn]="'percent'" [vld]="'max'"
+                                   [msg]="'the percent must be less than 100%'"></app-validator-message>
+          </div>
+        </div>
+        <div class="btn-addskill d-flex  justify-content-around">
+          <button type="button" class="btn btn-success add-skill" (click)="addSkill()">
+            <span class="d-flex align-items-center justify-content-center">+</span>
+          </button>
+        </div>
+        <app-validator-message [fg]="examFormGroup" [fcn]="'skillsMeasuredList'" [vld]="'sumPercent'"
+                               [msg]="'The sum of percent values must equal 100'"></app-validator-message>
+      </div>
+    </div>
+
+  </div>
+</form>

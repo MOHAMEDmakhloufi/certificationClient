@@ -1,0 +1,17 @@
+<ng-container *ngIf="(appState$ | async) as appState" [ngSwitch]="appState.dataState">
+  <ng-container *ngSwitchCase="DataState.LOADING_STATE">
+    <div class="spinner-parent d-flex justify-content-center align-items-center">
+      <div class="spinner-border"></div>
+    </div>
+  </ng-container>
+  <ng-container *ngSwitchCase="DataState.LOADED_STATE">
+    <app-certification-form [exam]="appState.appData.data.exam"></app-certification-form>
+  </ng-container>
+  <ng-container *ngSwitchCase="DataState.ERROR_STATE">
+    <div class="container my-5">
+      <div class="alert alert-danger">
+        <strong>Danger! </strong> {{ appState.error }}.
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
